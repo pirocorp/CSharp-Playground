@@ -22,6 +22,20 @@
             object actual)
             => AreDeeplyEqual(expected, actual, new ConditionalWeakTable<object, object>(), new DeepEqualityResult(null, null));
 
+        /// <summary>
+        /// Checks whether two objects are deeply equal by reflecting all their public properties recursively. Resolves successfully value and reference types, overridden Equals method, custom == operator, IComparable, nested objects and collection properties.
+        /// </summary>
+        /// <param name="expected">Expected object.</param>
+        /// <param name="actual">Actual object.</param>
+        /// <param name="result">Result object containing differences between the two objects.</param>
+        /// <returns>True or false.</returns>
+        public static bool AreDeeplyEqual(object expected, object actual, out DeepEqualityResult result)
+        {
+            result = new DeepEqualityResult(expected?.GetType(), actual?.GetType());
+
+            return AreDeeplyEqual(expected, actual, new ConditionalWeakTable<object, object>(), result);
+        }
+
         public static bool AreNotDeeplyEqual(object expected, object actual)
             => !AreDeeplyEqual(expected, actual);
 
@@ -75,7 +89,9 @@
                 return result.Failure;
             }
 
-            if (expected is IEnumerable && expectedType != typeof(string))
+            var stringType = typeof(string);
+
+            if (expected is IEnumerable && expectedType != stringType)
             {
                 return CollectionsAreDeeplyEqual(expected, actual, processedElements, result);
             }
@@ -100,7 +116,9 @@
 
             if (expectedType.GetTypeInfo().IsPrimitive || expectedType.GetTypeInfo().IsEnum)
             {
-                return expected.ToString() == actual.ToString();
+                return expected.ToString() == actual.ToString()
+                    ? result.Success
+                    : result.Failure;
             }
 
             var equalsOperator = expectedType.GetMethods().FirstOrDefault(m => m.Name == "op_Equality");
@@ -108,12 +126,19 @@
             {
                 var equalsOperatorResult = (bool)equalsOperator.Invoke(null, new[] { expected, actual });
 
-                if (!equalsOperatorResult)
+                if (!equalsOperatorResult && expectedType != stringType)
                 {
                     result.PushPath("== (Equality Operator)");
+
+                    if (!expectedType.IsDateTimeRelated())
+                    {
+                        result.ClearValues();
+                    }
                 }
 
-                return equalsOperatorResult;
+                return equalsOperatorResult
+                    ? result.Success
+                    : result.Failure;
             }
 
             if (expectedType != objectType && !expectedTypeIsAnonymous)
@@ -127,10 +152,14 @@
 
                     if (!equalsMethodResult)
                     {
-                        result.PushPath("Equals()");
+                        result
+                            .PushPath("Equals()")
+                            .ClearValues();
                     }
 
-                    return equalsMethodResult;
+                    return equalsMethodResult
+                        ? result.Success
+                        : result.Failure;
                 }
             }
 
@@ -182,12 +211,23 @@
 
             for (var i = 0; i < listOfExpectedValuesCount; i++)
             {
-                if (AreNotDeeplyEqual(listOfExpectedValues[i], listOfActualValues[i], processedElements, result))
+                var expectedValue = listOfExpectedValues[i];
+                var actualValue = listOfActualValues[i];
+
+                var collectionIsDictionary = expected is IDictionary;
+
+                var indexPath = collectionIsDictionary
+                    ? $"[{expectedValue.AsDynamic().Key}]"
+                    : $"[{i}]";
+
+                result.PushPath(indexPath);
+
+                if (AreNotDeeplyEqual(expectedValue, actualValue, processedElements, result))
                 {
-                    return result
-                        .PushPath($"[{i}]")
-                        .Failure;
+                    return result.Failure;
                 }
+
+                result.PopPath();
             }
 
             return result.Success;
@@ -282,10 +322,13 @@
                     actualPropertyValue, 
                     processedElements,
                     result);
+
                 if (propertiesAreDifferent)
                 {
                     return result.Failure;
                 }
+
+                result.PopPath();
             }
 
             return result.Success;

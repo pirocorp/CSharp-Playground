@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Concurrent;
     using System.Linq;
+    using System.Linq.Expressions;
     using System.Reflection;
 
     public static class Utilities
@@ -97,5 +98,38 @@
 
             return $"'{errorMessageName}'";
         }
+
+        /// <summary>
+        /// Returns the provided object cast as dynamic type.
+        /// </summary>
+        /// <returns>Object of dynamic type.</returns>
+        public static dynamic AsDynamic(this object obj) => obj?.GetType().CastTo<dynamic>(obj);
+
+        /// <summary>
+        /// Performs dynamic casting from type to generic result.
+        /// </summary>
+        /// <typeparam name="TResult">Result type from casting.</typeparam>
+        /// <param name="type">Type from which the casting should be done.</param>
+        /// <param name="data">Object from which the casting should be done.</param>
+        /// <returns>Cast object of type TResult.</returns>
+        public static TResult CastTo<TResult>(this Type type, object data)
+        {
+            var dataParam = Expression.Parameter(typeof(object), "data");
+            var firstConvert = Expression.Convert(dataParam, data.GetType());
+            var secondConvert = Expression.Convert(firstConvert, type);
+            var body = Expression.Block(secondConvert);
+
+            var run = Expression.Lambda(body, dataParam).Compile();
+            var ret = run.DynamicInvoke(data);
+            return (TResult)ret;
+        }
+
+        public static bool IsDateTimeRelated(this Type type)
+            => type == typeof(DateTime)
+               || type == typeof(DateTime?)
+               || type == typeof(TimeSpan)
+               || type == typeof(TimeSpan?)
+               || type == typeof(DateTimeOffset)
+               || type == typeof(DateTimeOffset?);
     }
 }

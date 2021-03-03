@@ -26,9 +26,11 @@
 
             this.expectedPathParts.Push(initialExpectedName ?? initialActualName);
             this.actualPathParts.Push(initialActualName ?? initialExpectedName);
+
+            this.Result = true;
         }
 
-        public bool Result { get; private set; } = true;
+        public bool Result { get; private set; }
 
         public object ExpectedValue { get; private set; }
 
