@@ -12,6 +12,12 @@
 
         private static readonly ConcurrentDictionary<Type, string> FriendlyTypeNames = new ConcurrentDictionary<Type, string>();
 
+        /// <summary>
+        /// Transforms generic type name to friendly one, showing generic type arguments.
+        /// </summary>
+        /// <param name="type">Type which name will be transformed.</param>
+        /// <param name="useFullName">Indicates whether the type name should be full ot not.</param>
+        /// <returns>Transformed name as string.</returns>
         public static string ToFriendlyTypeName(this Type type, bool useFullName = false)
         {
             if (type == null)
@@ -24,39 +30,6 @@
                     .GetOrAdd(type, _ => GetFriendlyTypeName(type, true))
                 : FriendlyTypeNames
                     .GetOrAdd(type, _ => GetFriendlyTypeName(type, false));
-        }
-
-        private static string GetFriendlyTypeName(Type type, bool useFullName)
-        {
-            const string anonymousTypePrefix = "<>f__";
-
-            var typeName = useFullName
-                ? type?.FullName ?? type?.Name
-                : type?.Name;
-
-            if (typeName == null)
-            {
-                throw new InvalidOperationException("Type name cannot be null.");
-            }
-
-            if (!type.GetTypeInfo().IsGenericType)
-            {
-                return typeName.Replace(anonymousTypePrefix, string.Empty);
-            }
-
-            var genericArgumentNames = type.GetGenericArguments().Select(ga => ga.ToFriendlyTypeName(useFullName));
-            var friendlyGenericName = typeName.Split('`')[0].Replace(anonymousTypePrefix, string.Empty);
-
-            var anonymousName = "AnonymousType";
-
-            if (friendlyGenericName.StartsWith(anonymousName))
-            {
-                friendlyGenericName = friendlyGenericName.Remove(anonymousName.Length);
-            }
-
-            var joinedGenericArgumentNames = string.Join(", ", genericArgumentNames);
-
-            return $"{friendlyGenericName}<{joinedGenericArgumentNames}>";
         }
 
         public static (string, string) GetTypeComparisonNames(this (Type Expected, Type Actual) typeTuple)
@@ -131,5 +104,38 @@
                || type == typeof(TimeSpan?)
                || type == typeof(DateTimeOffset)
                || type == typeof(DateTimeOffset?);
+
+        private static string GetFriendlyTypeName(Type type, bool useFullName)
+        {
+            const string anonymousTypePrefix = "<>f__";
+
+            var typeName = useFullName
+                ? type?.FullName ?? type?.Name
+                : type?.Name;
+
+            if (typeName == null)
+            {
+                throw new InvalidOperationException("Type name cannot be null.");
+            }
+
+            if (!type.GetTypeInfo().IsGenericType)
+            {
+                return typeName.Replace(anonymousTypePrefix, string.Empty);
+            }
+
+            var genericArgumentNames = type.GetGenericArguments().Select(ga => ga.ToFriendlyTypeName(useFullName));
+            var friendlyGenericName = typeName.Split('`')[0].Replace(anonymousTypePrefix, string.Empty);
+
+            var anonymousName = "AnonymousType";
+
+            if (friendlyGenericName.StartsWith(anonymousName))
+            {
+                friendlyGenericName = friendlyGenericName.Remove(anonymousName.Length);
+            }
+
+            var joinedGenericArgumentNames = string.Join(", ", genericArgumentNames);
+
+            return $"{friendlyGenericName}<{joinedGenericArgumentNames}>";
+        }
     }
 }

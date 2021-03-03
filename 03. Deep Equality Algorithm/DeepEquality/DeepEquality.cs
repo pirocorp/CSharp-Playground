@@ -36,6 +36,13 @@
             return AreDeeplyEqual(expected, actual, new ConditionalWeakTable<object, object>(), result);
         }
 
+        /// <summary>
+        /// Checks whether two objects are not deeply equal by reflecting all their public properties recursively. Resolves successfully value and reference types, overridden Equals method, custom == operator, IComparable, nested objects and collection properties.
+        /// </summary>
+        /// <param name="expected">Expected object.</param>
+        /// <param name="actual">Actual object.</param>
+        /// <returns>True or false.</returns>
+        /// <remarks>This method is used for the route testing. Since the ASP.NET Core MVC model binder creates new instances, circular references are not checked.</remarks>
         public static bool AreNotDeeplyEqual(object expected, object actual)
             => !AreDeeplyEqual(expected, actual);
 

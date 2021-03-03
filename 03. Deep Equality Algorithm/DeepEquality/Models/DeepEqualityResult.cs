@@ -9,7 +9,6 @@
         private readonly Type expectedType;
         private readonly Type actualType;
 
-        // Cat Owner Addresses [3] Text
         private readonly Stack<string> expectedPathParts;
         private readonly Stack<string> actualPathParts;
 
