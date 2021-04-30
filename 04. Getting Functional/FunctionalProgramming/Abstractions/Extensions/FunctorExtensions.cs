@@ -9,7 +9,7 @@
         {
             var result = new int[array.Length];
 
-            for (int i = 0; i < array.Length; i++)
+            for (var i = 0; i < array.Length; i++)
             {
                 result[i] = mapping(array[i]);
             }

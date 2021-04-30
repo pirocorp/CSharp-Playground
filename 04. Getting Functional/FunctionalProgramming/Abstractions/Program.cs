@@ -31,7 +31,7 @@
 
         public static void Maybe()
         {
-            var maybeNumber = new Maybe<Cat>(new Cat("Sharo", 5));
+            var maybeSharo = new Maybe<Cat>(new Cat("Sharo", 5));
 
             var maybeCat = GetCat()
                 .Map(c => new Cat(c.Name, c.Age + 1));
@@ -60,7 +60,7 @@
             var box = new[] { 42 };
             var maybeNumber = new Maybe<int>(42);
 
-            Func<int, IEnumerable<int>> halfFuncion
+            Func<int, IEnumerable<int>> halfFunction
                    = Func((int number)
                        => number % 2 == 0
                            ? new[] { number / 2 }
@@ -72,7 +72,7 @@
                         ? number / 2
                         : Maybe<int>.None);
 
-            IEnumerable<int> halfBox = box.FlatMap(halfFuncion);
+            IEnumerable<int> halfBox = box.FlatMap(halfFunction);
             Maybe<int> halfMaybe = maybeNumber.FlatMap(maybeHalfFunction);
 
             Maybe<int> maybeChaining = new Maybe<int>(64)
