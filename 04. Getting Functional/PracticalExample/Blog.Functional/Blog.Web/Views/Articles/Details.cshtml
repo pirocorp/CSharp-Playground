@@ -1,0 +1,28 @@
+﻿@model ArticleDetailsServiceModel
+
+@{
+    this.ViewData.SetTitle(this.Model.Title);
+}
+
+<h2>@(this.Html.DisplayFor(model => model.Title)) @(this.Model.IsPublic ? string.Empty : "(Unpublished)")</h2>
+
+@if (this.User.Identity.Name == this.Model.Author)
+{
+    <div>
+        <a class="btn btn-warning" asp-area="" asp-controller="Articles" asp-action="Edit" asp-route-id="@(this.Model.Id)">Edit</a>
+        <a class="btn btn-danger" asp-area="" asp-controller="Articles" asp-action="Delete" asp-route-id="@(this.Model.Id)">Delete</a>
+    </div>
+    <br />
+}
+
+<div>
+    <h5>
+        @(this.Model.PublishedOn?.ToShortDateString()) by @(this.Html.DisplayFor(model => model.Author))
+    </h5>
+    <hr />
+    <dl class="row">
+        <dd class="col-sm-8">
+            @(this.Html.DisplayFor(model => model.Content))
+        </dd>
+    </dl>
+</div>
