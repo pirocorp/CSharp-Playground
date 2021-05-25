@@ -6,6 +6,8 @@
     using System.Security.Cryptography;
     using System.Text;
 
+    using Coin.Utils;
+
     public class Block
     {
         private readonly Transaction[] transactions;

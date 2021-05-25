@@ -1,4 +1,4 @@
-﻿namespace Coin
+﻿namespace Coin.Utils
 {
     using System;
     using System.Collections.Generic;
