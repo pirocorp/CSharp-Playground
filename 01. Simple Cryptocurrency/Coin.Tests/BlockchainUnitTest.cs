@@ -5,7 +5,6 @@
 
     public class BlockchainUnitTest
     {
-
         [Fact]
         public void CreateGenesisBlockTest()
         {

@@ -1,10 +1,23 @@
-﻿namespace Coin
+﻿namespace Client
 {
     using System;
+
+    using Coin;
 
     public static class Program
     {
         public static void Main()
+        {
+            // Demo();
+
+            // Make blockchain
+            var bc = new BlockChain();
+
+            var engine = new Engine(bc);
+            engine.Run();
+        }
+
+        private static void Demo()
         {
             // Initialize blockchain
             var transactionPool = new TransactionPool();

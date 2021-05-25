@@ -14,7 +14,8 @@
 
         public BlockChain()
             : this(new TransactionPool())
-        { }
+        {
+        }
 
         public BlockChain(ITransactionPool transactionPool)
         {
@@ -42,6 +43,38 @@
 
             this.blocks.Add(block);
             this.transactionPool.ClearPool();
+        }
+
+        public double GetBalance(string name)
+        {
+            double balance = 0;
+            double spending = 0;
+            double income = 0;
+
+            foreach (var block in this.Blocks)
+            {
+                var transactions = block.Transactions;
+
+                foreach (var transaction in transactions)
+                {
+                    var sender = transaction.Sender;
+                    var recipient = transaction.Recipient;
+
+                    if (name.ToLower().Equals(sender.ToLower()))
+                    {
+                        spending += transaction.Amount + transaction.Fee;
+                    }
+
+                    if (name.ToLower().Equals(recipient.ToLower()))
+                    {
+                        income += transaction.Amount;
+                    }
+
+                    balance = income - spending;
+                }
+            }
+
+            return balance;
         }
 
         private static Block CreateGenesisBlock()
