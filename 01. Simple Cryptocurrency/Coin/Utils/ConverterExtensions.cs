@@ -19,6 +19,20 @@
         public static string ConvertToHexString(this byte[] byteArray, string delimiter = "")
             => BitConverter.ToString(byteArray).Replace("-", delimiter);
 
+        public static byte[] ConvertHexToByteArray(this string hex)
+        {
+            var length = hex.Length;
+
+            var bytes = new byte[length / 2];
+
+            for (var i = 0; i < length; i += 2)
+            {
+                bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
+            }
+
+            return bytes;
+        }
+
         public static string ConvertToString(this IEnumerable<Transaction> transactions)
             => JsonSerializer.Serialize(transactions);
     }

@@ -11,7 +11,10 @@
             this.Recipient = recipient;
             this.Amount = amount;
             this.Fee = fee;
+            this.Id = Guid.NewGuid().ToString();
         }
+
+        public string Id { get; set; }
 
         public long TimeStamp { get; private set;  }
 

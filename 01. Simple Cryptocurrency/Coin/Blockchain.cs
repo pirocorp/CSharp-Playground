@@ -33,6 +33,11 @@
 
         public IEnumerable<Block> Blocks => this.blocks.ToList().AsReadOnly();
 
+        public void AddTransaction(Transaction transaction)
+        {
+            this.transactionPool.AddTransaction(transaction);
+        }
+
         // Adds new block to the chain and clears transaction pool
         public void AddBlock()
         {
@@ -76,6 +81,19 @@
 
             return balance;
         }
+
+        public IEnumerable<Block> GetBlocks(int pageNumber, int resultPerPage)
+            => this.blocks
+                .OrderByDescending(x => x.Height)
+                .Skip((pageNumber - 1) * resultPerPage)
+                .Take(resultPerPage)
+                .ToList();
+
+        public IEnumerable<Transaction> GetTransactions(string address)
+            => this.Blocks
+                .SelectMany(b => b.Transactions)
+                .Where(t => t.Sender == address || t.Recipient == address)
+                .ToArray();
 
         private static Block CreateGenesisBlock()
         {

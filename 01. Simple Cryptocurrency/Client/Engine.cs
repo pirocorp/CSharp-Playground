@@ -1,10 +1,9 @@
 ﻿namespace Client
 {
     using System;
-    using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
-    using System.Text;
+
     using Coin;
     using Coin.Utils;
     using Newtonsoft.Json;
@@ -155,17 +154,16 @@
 
             Console.WriteLine("Please enter the sender name!:");
             Console.WriteLine("(type 'ga1' or 'ga2' for first time)");
-            string sender = Console.ReadLine();
+            var sender = Console.ReadLine();
 
             Console.WriteLine("Please enter the recipient name!:");
-            string recipient = Console.ReadLine();
+            var recipient = Console.ReadLine();
 
             Console.WriteLine("Please enter the amount (number)!:");
-            string strAmount = Console.ReadLine();
+            var strAmount = Console.ReadLine();
 
             Console.WriteLine("Please enter fee (number)!:");
-            string strFee = Console.ReadLine();
-            double amount;
+            var strFee = Console.ReadLine();
 
             // validate input
             if (string.IsNullOrEmpty(sender) ||
@@ -173,12 +171,11 @@
                 string.IsNullOrEmpty(strAmount) ||
                 string.IsNullOrEmpty(strFee))
             {
-
                 Console.WriteLine("\n\nError, Please input all data: sender, recipient, amount and fee!\n");
                 return;
             }
 
-            var success = double.TryParse(strAmount, out amount);
+            var success = double.TryParse(strAmount, out var amount);
 
             if (!success)
             {
@@ -186,8 +183,7 @@
                 return;
             }
 
-            double fee;
-            success = double.TryParse(strFee, out fee);
+            success = double.TryParse(strFee, out var fee);
 
             if (!success)
             {
