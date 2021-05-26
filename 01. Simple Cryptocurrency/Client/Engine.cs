@@ -10,9 +10,9 @@
 
     public class Engine
     {
-        private readonly BlockChain bc;
+        private readonly IBlockChain bc;
 
-        public Engine(BlockChain blockchain)
+        public Engine(IBlockChain blockchain)
         {
             this.bc = blockchain;
         }

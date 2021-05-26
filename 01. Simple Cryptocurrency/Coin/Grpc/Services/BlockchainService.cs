@@ -9,9 +9,9 @@
 
     public class BlockchainService : BChainService.BChainServiceBase
     {
-        private readonly BlockChain blockChain;
+        private readonly IBlockChain blockChain;
 
-        public BlockchainService(BlockChain blockChain)
+        public BlockchainService(IBlockChain blockChain)
         {
             this.blockChain = blockChain;
         }
