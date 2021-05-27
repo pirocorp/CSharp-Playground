@@ -98,8 +98,12 @@
         private static Block CreateGenesisBlock()
         {
             var transactions = new List<Transaction>();
-            var transaction = new Transaction(sender: "System", recipient: "Genesis Account", amount: 1000, 0.0001);
-            transactions.Add(transaction);
+
+            foreach (var account in Ico.Accounts)
+            {
+                var transaction = new Transaction("ico", account.Address, account.Balance, 0.0F);
+                transactions.Add(transaction);
+            }
 
             return new Block(height: 1, previousHash: string.Empty.ConvertToBytes(), transactions: transactions.ToArray(), creator: "Admin");
         }
