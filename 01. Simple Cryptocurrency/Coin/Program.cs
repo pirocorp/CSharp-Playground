@@ -2,6 +2,7 @@
 {
     using Coin.Scheduler;
 
+    // Used for Scheduling Tasks
     using Coravel;
 
     using Microsoft.AspNetCore.Hosting;
@@ -15,7 +16,7 @@
             host.Services.UseScheduler(scheduler =>
             {
                 scheduler.Schedule<BlockJob>()
-                    .EveryFiveMinutes();
+                    .EveryThirtySeconds();
             });
 
             host.Run();
