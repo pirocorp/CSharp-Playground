@@ -8,12 +8,12 @@
         {
             new IcoAccount()
             {
-                Address = "Wmstgg5MNymzOTXRM2H8krJ05j9cj6ooioCuxvGal/0=",
+                Address = "7v+K6cSv86mGLAhhLw3dtPWUp5rpDqtkKARG80OdElU=",
                 Balance = 4_000_000,
             },
             new IcoAccount()
             {
-                Address = "Y8cL2lDxKQRcvjfyuho0my/rmLiQf2/1YUJq71a01SA=",
+                Address = "0WJ2IWr5Ucu/Cn5E/YMtmGcJI/vYiGS1+MgFnHOu8rA=",
                 Balance = 2_000_000,
             },
         };

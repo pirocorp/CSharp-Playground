@@ -94,7 +94,7 @@
                 request.TransactionInput.SenderAddress,
                 request.TransactionOutput.RecipientAddress,
                 request.TransactionOutput.Amount,
-                request.TransactionOutput.Fee) { Id = request.TransactionId };
+                request.TransactionOutput.Fee) { Id = request.TransactionId, TimeStamp = request.TransactionInput.TimeStamp };
 
             // verify transaction ID
             var trxHash = TransactionHelpers.GetTransactionHash(newTrx);

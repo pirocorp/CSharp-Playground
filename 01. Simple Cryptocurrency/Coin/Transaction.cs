@@ -16,7 +16,7 @@
 
         public string Id { get; set; }
 
-        public long TimeStamp { get; private set;  }
+        public long TimeStamp { get; set;  }
 
         public string Sender { get; private set; }
 

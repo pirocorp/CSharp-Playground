@@ -102,6 +102,9 @@
             foreach (var account in Ico.Accounts)
             {
                 var transaction = new Transaction("ico", account.Address, account.Balance, 0.0F);
+
+                transaction.Id = TransactionHelpers.GetTransactionHash(transaction);
+
                 transactions.Add(transaction);
             }
 
