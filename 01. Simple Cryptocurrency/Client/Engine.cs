@@ -313,8 +313,8 @@
                 // Console.WriteLine("ID          :{0}", block.ID);
                 Console.WriteLine("Height      : {0}", block.Height);
                 Console.WriteLine("Timestamp   : {0}", block.TimeStamp.ConvertToDateTime());
-                Console.WriteLine("Prev. Hash  : {0}", block.PreviousHash.ConvertToHexString());
-                Console.WriteLine("Hash        : {0}", block.Hash.ConvertToHexString());
+                Console.WriteLine("Prev. Hash  : {0}", block.PreviousHash);
+                Console.WriteLine("Hash        : {0}", block.Hash);
 
                 if (block.Height == 1)
                 {

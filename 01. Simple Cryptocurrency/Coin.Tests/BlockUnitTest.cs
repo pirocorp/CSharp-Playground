@@ -17,10 +17,10 @@ namespace Coin.Tests
 
             lsTrx.Add(trx1);
 
-            var block = new Block(0, string.Empty.ConvertToBytes(), lsTrx.ToArray(), "Admin");
+            var block = new Block(0, string.Empty, lsTrx.ToArray(), "Admin");
             Assert.Equal(0, block.Height);
-            Assert.Equal(string.Empty.ConvertToBytes(), block.PreviousHash);
-            Assert.Equal("Admin", block.Creator);
+            Assert.Equal(string.Empty, block.PreviousHash);
+            Assert.Equal("Admin", block.Validator);
             Assert.Equal(lsTrx, block.Transactions);
             Assert.Single(block.Transactions);
             Assert.Equal(32, block.Hash.Length);

@@ -11,6 +11,7 @@
                 Address = "7v+K6cSv86mGLAhhLw3dtPWUp5rpDqtkKARG80OdElU=",
                 Balance = 4_000_000,
             },
+
             new IcoAccount()
             {
                 Address = "0WJ2IWr5Ucu/Cn5E/YMtmGcJI/vYiGS1+MgFnHOu8rA=",

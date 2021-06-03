@@ -20,7 +20,7 @@
             //Last block is genesis for first time
             var lastBlock = bc.GetLastBlock;
             Assert.Equal(1, lastBlock.Height);
-            Assert.Equal(string.Empty.ConvertToBytes(), lastBlock.PreviousHash);
+            Assert.Equal(string.Empty, lastBlock.PreviousHash);
             Assert.Equal(32, lastBlock.Hash.Length);
         }
 

@@ -103,12 +103,16 @@
             {
                 var transaction = new Transaction("ico", account.Address, account.Balance, 0.0F);
 
-                transaction.Id = TransactionHelpers.GetTransactionHash(transaction);
+                transaction.Hash = TransactionHelpers.GetTransactionHash(transaction);
 
                 transactions.Add(transaction);
             }
 
-            return new Block(height: 1, previousHash: string.Empty.ConvertToBytes(), transactions: transactions.ToArray(), creator: "Admin");
+            return new Block(
+                height: 0,
+                previousHash: string.Empty,
+                transactions: transactions.ToArray(),
+                validator: "Admin");
         }
     }
 }

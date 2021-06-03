@@ -71,7 +71,7 @@
                 .GetTransactions(request.Address)
                 .Select(t => new TransactionModel()
                 {
-                    TransactionID = t.Id,
+                    TransactionID = t.Hash,
                     TimeStamp = t.TimeStamp,
                     Sender = t.Sender,
                     Recipient = t.Recipient,
@@ -94,7 +94,7 @@
                 request.TransactionInput.SenderAddress,
                 request.TransactionOutput.RecipientAddress,
                 request.TransactionOutput.Amount,
-                request.TransactionOutput.Fee) { Id = request.TransactionId, TimeStamp = request.TransactionInput.TimeStamp };
+                request.TransactionOutput.Fee) { Hash = request.TransactionId, TimeStamp = request.TransactionInput.TimeStamp };
 
             // verify transaction ID
             var trxHash = TransactionHelpers.GetTransactionHash(newTrx);
@@ -130,14 +130,14 @@
             var model = new BlockModel
             {
                 Height = block.Height,
-                Hash = block.Hash.ConvertToHexString(),
-                PrevHash = block.PreviousHash.ConvertToHexString(),
+                Hash = block.Hash,
+                PrevHash = block.PreviousHash,
                 TimeStamp = block.TimeStamp,
             };
 
             var transactions = block.Transactions.Select(t => new TransactionModel()
             {
-                TransactionID = t.Id,
+                TransactionID = t.Hash,
                 TimeStamp = t.TimeStamp,
                 Sender = t.Sender,
                 Recipient = t.Recipient,
