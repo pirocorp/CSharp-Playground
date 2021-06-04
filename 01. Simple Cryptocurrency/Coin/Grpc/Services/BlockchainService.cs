@@ -28,16 +28,6 @@
             });
         }
 
-        public override Task<BalanceResponse> GetBalance(AccountRequest request, ServerCallContext context)
-        {
-            var balance = this.blockChain.GetBalance(request.Address);
-
-            return Task.FromResult(new BalanceResponse
-            {
-                Balance = balance,
-            });
-        }
-
         public override Task<BlockResponse> LastBlock(EmptyRequest request, ServerCallContext context)
         {
             var block = this.blockChain.GetLastBlock;
@@ -49,18 +39,14 @@
             });
         }
 
-        public override Task<BlocksResponse> GetBlocks(BlockRequest request, ServerCallContext context)
+        public override Task<BalanceResponse> GetBalance(AccountRequest request, ServerCallContext context)
         {
-            var blocks = this.blockChain.GetBlocks(request.PageNumber, request.ResultPerPage);
+            var balance = this.blockChain.GetBalance(request.Address);
 
-            var response = new BlocksResponse();
-
-            foreach (var block in blocks)
+            return Task.FromResult(new BalanceResponse
             {
-                response.Blocks.Add(ConvertBlockToBlockModel(block));
-            }
-
-            return Task.FromResult(response);
+                Balance = balance,
+            });
         }
 
         public override Task<TransactionsResponse> GetTransactions(AccountRequest request, ServerCallContext context)
@@ -82,6 +68,20 @@
             foreach (var trx in transactions)
             {
                 response.Transactions.Add(trx);
+            }
+
+            return Task.FromResult(response);
+        }
+
+        public override Task<BlocksResponse> GetBlocks(BlockRequest request, ServerCallContext context)
+        {
+            var blocks = this.blockChain.GetBlocks(request.PageNumber, request.ResultPerPage);
+
+            var response = new BlocksResponse();
+
+            foreach (var block in blocks)
+            {
+                response.Blocks.Add(ConvertBlockToBlockModel(block));
             }
 
             return Task.FromResult(response);
