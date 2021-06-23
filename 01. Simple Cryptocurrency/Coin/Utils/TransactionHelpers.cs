@@ -18,7 +18,12 @@
 
         public static string GetTransactionHash(Transaction input)
         {
-            var data = input.TimeStamp + input.Sender + input.Amount + input.Fee + input.Recipient;
+            var data =
+                input.TimeStamp +
+                input.Sender +
+                input.Amount +
+                input.Fee +
+                input.Recipient;
 
             return GenerateHash(data);
         }

@@ -13,6 +13,7 @@
             this.Fee = fee;
         }
 
+        // This is the id of the transaction. It is calculated hashing the data in transaction.
         public string Hash { get; set; }
 
         public long TimeStamp { get; init;  }

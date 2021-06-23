@@ -30,7 +30,7 @@ namespace Coin
 
         public int Version { get; set; }
 
-        // The hash of the block. The hash act as the unique identity of the given block in the blockchain.
+        // PreviousHash is the hash of the previous block.
         public string PreviousHash { get; private set; }
 
         // The root hash of Merkle Tree (Hash Tree). The MerkleRoot will be calculated for Transactions.
@@ -41,20 +41,20 @@ namespace Coin
 
         public int Difficulty { get; set; }
 
+        // The creator of the block identified by the address (public key).
+        // Validators get reward from accumulated transaction fees.
+        public string Validator { get; private set; }
+
         #endregion
 
         // The sequence amount of blocks.
         public long Height { get; private set; }
 
-        // Hash is the hash of the previous block.
+        // The hash of the block. The hash act as the unique identity of the given block in the blockchain.
         public string Hash { get; private set; }
 
         // Transactions are collections of transactions that occur, as previously discussed above.
         public IEnumerable<Transaction> Transactions => this.transactions.ToList().AsReadOnly();
-
-        // The creator of the block identified by the public key.
-        // Validators get reward from accumulated transaction fees.
-        public string Validator { get; private set; }
 
         public int TransactionsCount => this.transactions.Length;
 
