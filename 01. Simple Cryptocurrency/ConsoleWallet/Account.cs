@@ -3,7 +3,7 @@
     using System;
     using System.Numerics;
     using System.Security.Cryptography;
-
+    using Coin.Utils;
     using EllipticCurve;
 
     public class Account
@@ -28,7 +28,7 @@
 
         public string PublicKey => Convert.ToHexString(this.publicKey.toString());
 
-        public string Address => Convert.ToBase64String(SHA256.Create().ComputeHash(this.publicKey.toString()));
+        public string Address => SHA256.Create().ComputeHash(this.publicKey.toString()).ConvertToHexString();
 
         public string CreateSignature(string message) => Ecdsa.sign(message, this.privateKey).toBase64();
 

@@ -21,9 +21,10 @@ namespace Coin
             this.MerkleRoot = this.GenerateMerkleRoot();
             this.Height = height;
             this.transactions = transactions.ToArray();
-            this.Hash = this.GenerateBlockHash();
             this.Difficulty = 1;
             this.Validator = validator;
+
+            this.Hash = this.GenerateBlockHash();
         }
 
         #region BlockHeader
