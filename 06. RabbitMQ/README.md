@@ -175,7 +175,6 @@ SCENARIO 3
 - Routing pattern between exchange (agreements) and Queue C (headstore_agreements): agreements.eu.*.headstore
 - Example of message routing keys that will match: agreements.eu.berlin.headstore and agreements.eu.stockholm.headstore
 
-EXAMPLE
-A message with routing key agreements.eu.berlin is sent to the exchange agreements. The messages are routed to the queue berlin_agreements because the routing pattern of "agreements.eu.berlin.#" matches the routing keys beginning with "agreements.eu.berlin". The message is also routed to the queue all_agreements because the routing key (agreements.eu.berlin) matches the routing pattern (agreements.#).
+EXAMPLE: A message with routing key agreements.eu.berlin is sent to the exchange agreements. The messages are routed to the queue berlin_agreements because the routing pattern of "agreements.eu.berlin.#" matches the routing keys beginning with "agreements.eu.berlin". The message is also routed to the queue all_agreements because the routing key (agreements.eu.berlin) matches the routing pattern (agreements.#).
 
 Topic Exchange: Messages are routed to one or many queues based on a match between a message routing key and the routing pattern.
