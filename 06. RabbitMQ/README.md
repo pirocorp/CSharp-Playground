@@ -70,3 +70,40 @@ Some important concepts need to be described before we dig deeper into RabbitMQ.
 - **AMQP**: Advanced Message Queuing Protocol is the protocol used by RabbitMQ for messaging.
 - **Users**: It is possible to connect to RabbitMQ with a given username and password. Every user can be assigned permissions such as rights to read, write and configure privileges within the instance. Users can also be assigned permissions for specific virtual hosts.
 - **Vhost, virtual host**: Provides a way to segregate applications using the same RabbitMQ instance. Different users can have different permissions to different vhost and queues and exchanges can be created, so they only exist in one vhost.
+
+At the beginning of this article series, we had one producer (the website application) and one consumer (the PDF processing application). If the PDF processing application crashes, or if many PDF requests are coming at the same time, messages would continue to stack up in the queue until the consumer starts again. It would then process all the messages, one by one.
+
+## PUBLISH AND SUBSCRIBE MESSAGES
+
+RabbitMQ uses a protocol called AMQP by default. To be able to communicate with RabbitMQ you need a library that understands the same protocol as RabbitMQ. Download the client library for the programming language that you intend to use for your applications. A client library is an application programming interface (API) for use in writing client applications. A client library has several methods; in this case, to communicate with RabbitMQ. The methods should be used when you connect to the RabbitMQ broker (using the given parameters, hostname, port number, etc.), for example, or when you declare a queue or an exchange. There is a choice of libraries for almost every programming language.
+
+Steps to follow when setting up a connection and publishing a message/consuming a message:
+
+1. Set up/create a connection object. The username, password, connection URL, port, etc., will need to be specified. A TCP connection will be set up between the application and RabbitMQ when the start method is called.
+2. Create a channel in the TCP connection, then the connection interface can be used to open a channel through which to send and receive messages.
+3. Declare/create a queue. Declaring a queue will cause it to be created if it does not already exist. All queues need to be declared before they can be used.
+4. Set up exchanges and bind a queue to an exchange in subscriber/consumer. All exchanges must be declared before they can be used. An exchange accepts messages from a producer application and routes them to message queues. For messages to be routed to queues, queues must be bound to an exchange.
+5. In publisher: Publish a message to an exchange. In subscriber/consumer: Consume a message from a queue.
+7. Close the channel and the connection.
+
+## Exchanges, routing keys and bindings
+
+Messages are not published directly to a queue. Instead, the producer sends messages to an exchange. Exchanges are message routing agents, defined by the virtual host within RabbitMQ. An exchange is responsible for routing the messages to different queues with the help of header attributes, bindings, and routing keys.
+
+A **binding** is a "link" that you set up to bind a queue to an exchange.
+
+The **routing key** is a message attribute the exchange looks at when deciding how to route the message to queues (depending on exchange type).
+
+Exchanges, connections, and queues can be configured with parameters such as durable, temporary, and auto delete upon creation. Durable exchanges survive server restarts and last until they are explicitly deleted. Temporary exchanges exist until RabbitMQ is shut down. Auto-deleted exchanges are removed once the last bound object is unbound from the exchange.
+
+In RabbitMQ, there are four different types of exchanges that route the message differently using different parameters and bindings setups. Clients can create their own exchanges or use the predefined default exchanges which are created when the server starts for the first time.
+
+## Standard RabbitMQ message flow
+
+![RabbitMQ Message Flow](https://user-images.githubusercontent.com/34960418/136812727-f258bbfc-f425-49bc-8dfc-56814a1c0dd8.png)
+
+1. The producer publishes a message to the exchange.
+2. The exchange receives the message and is now responsible for the routing of the message.
+3. Binding must be set up between the queue and the exchange. In this case, we have bindings to two different queues from the exchange. The exchange routes the message into the queues.
+4. The messages stay in the queue until they are handled by a consumer.
+5. The consumer handles the message.
