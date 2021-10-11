@@ -235,3 +235,7 @@ Queue C doesn't receive any of the messages since its binding is configured to m
 It's worth noting that in a header exchange, the actual order of the key-value pairs in the message is irrelevant.
 
 Example of Headers Exchange. Routes messages to queues that are bound using arguments (key and value) in the amq.headers attribute.
+
+#### Dead Letter Exchange
+
+If no matching queue can be found for the message, the message is silently dropped. RabbitMQ provides an AMQP extension known as the "Dead Letter Exchange", which provides the functionality to capture messages that are not deliverable.
