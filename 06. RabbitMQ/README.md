@@ -98,7 +98,7 @@ Exchanges, connections, and queues can be configured with parameters such as dur
 
 In RabbitMQ, there are four different types of exchanges that route the message differently using different parameters and bindings setups. Clients can create their own exchanges or use the predefined default exchanges which are created when the server starts for the first time.
 
-## Standard RabbitMQ message flow
+### Standard RabbitMQ message flow
 
 ![RabbitMQ Message Flow](https://user-images.githubusercontent.com/34960418/136812727-f258bbfc-f425-49bc-8dfc-56814a1c0dd8.png)
 
@@ -107,3 +107,75 @@ In RabbitMQ, there are four different types of exchanges that route the message 
 3. Binding must be set up between the queue and the exchange. In this case, we have bindings to two different queues from the exchange. The exchange routes the message into the queues.
 4. The messages stay in the queue until they are handled by a consumer.
 5. The consumer handles the message.
+
+### Exchange types
+
+#### Direct Exchange
+
+A direct exchange delivers messages to queues based on a message routing key. The routing key is a message attribute added to the message header by the producer. Think of the routing key as an "address" that the exchange is using to decide how to route the message. **A message goes to the queue(s) with the binding key that exactly matches the routing key of the message.**
+
+The direct exchange type is useful to distinguish messages published to the same exchange using a simple string identifier.
+
+The default exchange AMQP brokers must provide for the direct exchange is "amq.direct".
+
+Imagine that queue A (create_pdf_queue) in the image below (Direct Exchange Figure) is bound to a direct exchange (pdf_events) with the binding key pdf_create. When a new message with routing key pdf_create arrives at the direct exchange, the exchange routes it to the queue where the binding_key = routing_key, in the case to queue A (create_pdf_queue).
+
+![Direct Exchange](https://user-images.githubusercontent.com/34960418/136813402-d9e2c25e-0208-4a98-8bbe-f9ea8fe85ba1.png)
+
+SCENARIO 1
+- Exchange: pdf_events
+- Queue A: create_pdf_queue
+- Binding key between exchange (pdf_events) and Queue A (create_pdf_queue): pdf_create
+
+SCENARIO 2
+- Exchange: pdf_events
+- Queue B: pdf_log_queue
+- Binding key between exchange (pdf_events) and Queue B (pdf_log_queue): pdf_log
+
+EXAMPLE
+Example: A message with routing key pdf_log is sent to the exchange pdf_events. The messages is routed to pdf_log_queue because the routing key (pdf_log) matches the binding key (pdf_log).
+
+Direct Exchange: A message goes to the queues whose binding key exactly matches the routing key of the message. If the message routing key does not match any binding key, the message is discarded.
+
+#### Default exchange
+
+The default exchange is a pre-declared direct exchange with no name, usually referred by an empty string. When you use default exchange, your message is delivered to the queue with a name equal to the routing key of the message. Every queue is automatically bound to the default exchange with a routing key which is the same as the queue name.
+
+#### Topic Exchange
+
+Topic exchanges route messages to queues based on wildcard matches between the routing key and the routing pattern, which is specified by the queue binding. Messages are routed to one or many queues based on a matching between a message routing key and this pattern.
+
+The routing key must be a list of words, delimited by a period (.). Examples are agreements.us and agreements.eu.stockholm which in this case identifies agreements that are set up for a company with offices in lots of different locations. The routing patterns may contain an asterisk (“*”) to match a word in a specific position of the routing key (e.g., a routing pattern of "agreements.*.*.b.*" only match routing keys where the first word is "agreements" and the fourth word is "b"). A pound symbol (“#”) indicates a match of zero or more words (e.g., a routing pattern of "agreements.eu.berlin.#" matches any routing keys beginning with "agreements.eu.berlin").
+
+The consumers indicate which topics they are interested in (like subscribing to a feed for an individual tag). The consumer creates a queue and sets up a binding with a given routing pattern to the exchange. All messages with a routing key that match the routing pattern are routed to the queue and stay there until the consumer consumes the message.
+
+The default exchange AMQP brokers must provide for the topic exchange is "amq.topic".
+
+![Topic Exchange](https://user-images.githubusercontent.com/34960418/136815106-135fa350-5a8c-4e64-8e10-6240e86ba27f.png)
+
+SCENARIO 1
+The image to the right shows an example where consumer A is interested in all the agreements in Berlin.
+- Exchange: agreements
+- Queue A: berlin_agreements
+- Routing pattern between exchange (agreements) and Queue A (berlin_agreements): agreements.eu.berlin.#
+- Example of message routing key that matches: agreements.eu.berlin and agreements.eu.berlin.headstore
+
+SCENARIO 2
+Consumer B is interested in all the agreements.
+- Exchange: agreements
+- Queue B: all_agreements
+- Routing pattern between exchange (agreements) and Queue B (all_agreements): agreements.#
+- Example of message routing key that matches: agreements.eu.berlin and agreements.us
+rabbitmq topic exchange
+
+SCENARIO 3
+- Consumer C is interested in all agreements for European head stores.
+- Exchange: agreements
+- Queue C: headstore_agreements
+- Routing pattern between exchange (agreements) and Queue C (headstore_agreements): agreements.eu.*.headstore
+- Example of message routing keys that will match: agreements.eu.berlin.headstore and agreements.eu.stockholm.headstore
+
+EXAMPLE
+A message with routing key agreements.eu.berlin is sent to the exchange agreements. The messages are routed to the queue berlin_agreements because the routing pattern of "agreements.eu.berlin.#" matches the routing keys beginning with "agreements.eu.berlin". The message is also routed to the queue all_agreements because the routing key (agreements.eu.berlin) matches the routing pattern (agreements.#).
+
+Topic Exchange: Messages are routed to one or many queues based on a match between a message routing key and the routing pattern.
