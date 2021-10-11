@@ -178,3 +178,60 @@ SCENARIO 3
 EXAMPLE: A message with routing key agreements.eu.berlin is sent to the exchange agreements. The messages are routed to the queue berlin_agreements because the routing pattern of "agreements.eu.berlin.#" matches the routing keys beginning with "agreements.eu.berlin". The message is also routed to the queue all_agreements because the routing key (agreements.eu.berlin) matches the routing pattern (agreements.#).
 
 Topic Exchange: Messages are routed to one or many queues based on a match between a message routing key and the routing pattern.
+
+#### Fanout Exchange
+
+A fanout exchange copies and routes a received message to all queues that are bound to it regardless of routing keys or pattern matching as with direct and topic exchanges. The keys provided will simply be ignored.
+
+Fanout exchanges can be useful when the same message needs to be sent to one or more queues with consumers who may process the same message in different ways.
+
+The image to the right (Fanout Exchange) shows an example where a message received by the exchange is copied and routed to all three queues bound to the exchange. It could be sport or weather updates that should be sent out to each connected mobile device when something happens, for instance.
+
+The default exchange AMQP brokers must provide for the topic exchange is "amq.fanout".
+
+![Fanout Exchange](https://user-images.githubusercontent.com/34960418/136817684-17e9449d-bf96-4011-9d57-f82272c222ae.png)
+
+SCENARIO 1
+- Exchange: sport_news
+- Queue A: Mobile client queue A
+- Binding: Binding between the exchange (sport_news) and Queue A (Mobile client queue A)
+
+EXAMPLE: A message is sent to the exchange sport_news. The message is routed to all queues (Queue A, Queue B, Queue C) because all queues are bound to the exchange. Provided routing keys are ignored.
+
+Fanout Exchange: The received message is routed to all queues that are bound to the exchange.
+
+#### Headers Exchange
+
+A headers exchange routes messages based on arguments containing headers and optional values. Headers exchanges are very similar to topic exchanges, but route messages based on header values instead of routing keys. A message matches if the value of the header equals the value specified upon binding.
+
+A special argument named "x-match", added in the binding between exchange and queue, specifies if all headers must match or just one. Either any common header between the message and the binding count as a match, or all the headers referenced in the binding need to be present in the message for it to match. The "x-match" property can have two different values: "any" or "all", where "all" is the default value. A value of "all" means all header pairs (key, value) must match, while value of "any" means at least one of the header pairs must match. Headers can be constructed using a wider range of data types, integer or hash for example, instead of a string. The headers exchange type (used with the binding argument "any") is useful for directing messages which contain a subset of known (unordered) criteria.
+
+The default exchange AMQP brokers must provide for the topic exchange is "amq.headers".
+
+![Headers Exchange](https://user-images.githubusercontent.com/34960418/136818353-e3164846-09dc-4622-a307-a3964d029ac1.png)
+
+EXAMPLE
+- Exchange: Binding to Queue A with arguments (key = value): format = pdf, type = report, x-match = all
+- Exchange: Binding to Queue B with arguments (key = value): format = pdf, type = log, x-match = any
+- Exchange: Binding to Queue C with arguments (key = value): format = zip, type = report, x-match = all
+
+SCENARIO 1
+Message 1 is published to the exchange with header arguments (key = value): "format = pdf", "type = report".
+
+Message 1 is delivered to Queue A because all key/value pairs match, and Queue B since "format = pdf" is a match (binding rule set to "x-match =any").
+
+SCENARIO 2
+Message 2 is published to the exchange with header arguments of (key = value): "format = pdf".
+
+Message 2 is only delivered to Queue B. Because the binding of Queue A requires both "format = pdf" and "type = report" while Queue B is configured to match any key-value pair (x-match = any) as long as either "format = pdf" or "type = log" is present.
+
+SCENARIO 3
+Message 3 is published to the exchange with header arguments of (key = value): "format = zip", "type = log".
+
+Message 3 is delivered to Queue B since its binding indicates that it accepts messages with the key-value pair "type = log", it doesn't mind that "format = zip" since "x-match = any".
+
+Queue C doesn't receive any of the messages since its binding is configured to match all of the headers ("x-match = all") with "format = zip", "type = pdf". No message in this example lives up to these criterias.
+
+It's worth noting that in a header exchange, the actual order of the key-value pairs in the message is irrelevant.
+
+Example of Headers Exchange. Routes messages to queues that are bound using arguments (key and value) in the amq.headers attribute.
