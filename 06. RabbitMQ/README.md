@@ -120,6 +120,8 @@ The default exchange AMQP brokers must provide for the direct exchange is "amq.d
 
 Imagine that queue A (create_pdf_queue) in the image below (Direct Exchange Figure) is bound to a direct exchange (pdf_events) with the binding key pdf_create. When a new message with routing key pdf_create arrives at the direct exchange, the exchange routes it to the queue where the binding_key = routing_key, in the case to queue A (create_pdf_queue).
 
+It is perfectly legal to bind multiple queues with the same **binding key**. In that case, the direct exchange will behave like **fanout** and will broadcast the message to all the matching queues.
+
 ![Direct Exchange](https://user-images.githubusercontent.com/34960418/136813402-d9e2c25e-0208-4a98-8bbe-f9ea8fe85ba1.png)
 
 SCENARIO 1
