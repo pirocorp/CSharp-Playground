@@ -239,3 +239,7 @@ Example of Headers Exchange. Routes messages to queues that are bound using argu
 #### Dead Letter Exchange
 
 If no matching queue can be found for the message, the message is silently dropped. RabbitMQ provides an AMQP extension known as the "Dead Letter Exchange", which provides the functionality to capture messages that are not deliverable.
+
+#### [Exchange to Exchange Bindings](https://www.rabbitmq.com/e2e.html)
+
+RabbitMQ  introduced an exchange.bind method which binds one exchange to another exchange. The binding is semantically identical to exchange-to-queue bindings: unidirectional, binding keys and exchange types operate as normal, but both endpoints (the source and destination) of the binding are exchanges. This allows far richer routing topologies to be created. Note the source and destination fields in the exchange.bind method reflect the flow of messages: from the exchange at the source, and to the exchange at the destination.
