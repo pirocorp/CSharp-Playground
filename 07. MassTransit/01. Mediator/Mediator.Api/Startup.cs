@@ -3,7 +3,6 @@ namespace Mediator.Api
     using Components.Consumers;
     using Contracts;
     using MassTransit;
-    using MassTransit.Mediator;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;

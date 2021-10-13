@@ -21,14 +21,26 @@
         public async Task<IActionResult> Post(Guid id, string customerNumber)
         {
             // Acts like RPC
-            var response = await this.submitOrderRequestClient.GetResponse<IOrderSubmissionAccepted>(new
-            {
-                OrderId = id,
-                TimeStamp = InVar.Timestamp,
-                CustomerNumber = customerNumber
-            });
+            var (accepted, rejected) = await this.submitOrderRequestClient
+                .GetResponse<IOrderSubmissionAccepted, IOrderSubmissionRejected>(new
+                {
+                    OrderId = id,
+                    TimeStamp = InVar.Timestamp,
+                    CustomerNumber = customerNumber
+                });
 
-            return this.Ok(response.Message);
+            if (accepted.IsCompletedSuccessfully)
+            {
+                var response = await accepted;
+
+                return this.Accepted(response.Message);
+            }
+            else
+            {
+                var response = await rejected;
+
+                return this.BadRequest(response.Message);
+            }
         }
     }
 }
