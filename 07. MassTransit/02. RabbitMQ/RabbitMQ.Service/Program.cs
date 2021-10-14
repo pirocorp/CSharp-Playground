@@ -13,6 +13,9 @@
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
 
+    /// <summary>
+    /// Separate service for the SubmitOrderConsumer
+    /// </summary>
     public static class Program
     {
         public static async Task Main(string[] args)
