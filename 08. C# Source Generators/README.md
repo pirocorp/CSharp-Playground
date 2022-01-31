@@ -10,7 +10,7 @@ When combined, these two things are what make Source Generators so useful. You c
 
 Source generators run as a phase of compilation visualized below:
 
-[Source generator run](./Picture1.png)
+![Source generator run](./Picture1.png)
 
 ## Source Generators and Ahead of Time (AOT) Compilation
 
