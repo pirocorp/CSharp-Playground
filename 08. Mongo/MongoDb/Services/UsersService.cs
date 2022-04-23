@@ -2,7 +2,7 @@
 {
     using Data;
     using Data.Models;
-
+    
     public class UsersService : IUsersService
     {
         private const string Table = "Users";
