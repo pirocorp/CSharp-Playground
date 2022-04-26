@@ -1,7 +1,6 @@
 ﻿namespace MongoDb
 {
     using MongoDb.Data;
-    using MongoDb.Data.Models;
     using MongoDb.Models;
     using MongoDb.Services;
 
@@ -41,7 +40,7 @@
 
         private static async Task GetAll()
         {
-            var records = await service.GetAll();
+            var records = await service.GetAll<PersonModel>();
 
             foreach (var record in records)
             {
@@ -62,25 +61,30 @@
 
         private static async Task GetById()
         {
-            var record = await service.GetById<Person>(Guid);
+            var record = await service.GetById<PersonModel>(Guid);
 
             PrintPerson(record);
         }
 
         private static async Task Upsert()
         {
-            var record = await service.GetById<Person>(Guid);
+            var record = await service.GetById<PersonModel>(Guid);
             record.DateOfBirth = new DateTime(2003, 5, 5, 0, 0, 0, DateTimeKind.Utc);
 
-            await service.Upsert(Guid, record);
+            await service.Upsert(
+                Guid, 
+                record.FirstName,
+                record.LastName,
+                record.PrimaryAddress.StreetAddress,
+                record.PrimaryAddress.City,
+                record.PrimaryAddress.State,
+                record.PrimaryAddress.ZipCode);
         }
 
         private static async Task Delete()
-        {
-            await service.Delete(Guid);
-        }
+            => await service.Delete(Guid);
 
-        private static void PrintPerson(Person person)
+        private static void PrintPerson(PersonModel person)
         {
             Console.WriteLine($"{person.Id}: {person.FirstName} {person.LastName}");
 

@@ -1,29 +1,42 @@
-﻿namespace MongoDb.Services;
-
-using Data.Models;
-
-public interface IUsersService
+﻿namespace MongoDb.Services
 {
-    Task<T> GetById<T>(string guid);
+    public interface IUsersService
+    {
+        Task<TOut> GetById<TOut>(string guid);
 
-    Task<T> GetById<T>(Guid guid);
+        Task<TOut> GetById<TOut>(Guid guid);
 
-    Task<IEnumerable<Person>> GetAll();
+        Task<IEnumerable<TOut>> GetAll<TOut>();
 
-    Task<IEnumerable<T>> Select<T>();
+        Task<IEnumerable<TOut>> Select<TOut>();
 
-    Task Create(
-        string firstName,
-        string lastName,
-        string street,
-        string city,
-        string state, 
-        string zip,
-        string guid = null);
+        Task Create(
+            string firstName,
+            string lastName,
+            string street,
+            string city,
+            string state, 
+            string zip,
+            string guid = null);
 
-    Task Upsert(string guid, Person person);
+        Task Upsert(
+            string guid, 
+            string firstName,
+            string lastName,
+            string street,
+            string city,
+            string state, 
+            string zip);
 
-    Task Upsert(Guid guid, Person person);
+        Task Upsert(
+            Guid guid, 
+            string firstName,
+            string lastName,
+            string street,
+            string city,
+            string state, 
+            string zip);
 
-    Task Delete(Guid guid);
+        Task Delete(Guid guid);
+    }
 }
