@@ -19,7 +19,9 @@ namespace M220N.Models.Responses
         }
 
         public bool Success { get; set; }
+
         public string SuccessMessage { get; set; }
+
         public string ErrorMessage { get; set; }
 
         [JsonProperty("auth_token")]

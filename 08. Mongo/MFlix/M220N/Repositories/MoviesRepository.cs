@@ -62,7 +62,6 @@ namespace M220N.Repositories
             var skip =  moviesPerPage * page;
             var limit = moviesPerPage;
 
-
             var sortFilter = new BsonDocument(sort, sortDirection);
             var movies = await _moviesCollection
                 .Find(Builders<Movie>.Filter.Empty)
@@ -84,11 +83,15 @@ namespace M220N.Repositories
         {
             try
             {
-                return await _moviesCollection.Aggregate()
+                return await _moviesCollection
+                    .Aggregate()
                     .Match(Builders<Movie>.Filter.Eq(x => x.Id, movieId))
-                    // Ticket: Get Comments
-                    // Add a lookup stage that includes the
-                    // comments associated with the retrieved movie
+                    .Lookup(
+                        _commentsCollection,
+                        m => m.Id,
+                        m => m.MovieId,
+                        (Movie m) => m.Comments
+                        )
                     .FirstOrDefaultAsync(cancellationToken);
             }
 
@@ -209,13 +212,6 @@ namespace M220N.Repositories
                 .Skip(page * limit)
                 .Sort(sort)
                 .ToListAsync(cancellationToken);
-
-
-            // // TODO Ticket: Paging
-            // TODO Ticket: Paging
-            // Modify the code you added in the Text and Subfield ticket to
-            // include pagination. Refer to the other methods in this class
-            // if you need a hint.
         }
 
         /// <summary>
@@ -261,8 +257,11 @@ namespace M220N.Repositories
             {
                 matchStage,
                 sortStage,
-                // add the remaining stages in the correct order
 
+                skipStage,
+                limitStage,
+
+                facetStage,
             };
 
             // I run the pipeline you built

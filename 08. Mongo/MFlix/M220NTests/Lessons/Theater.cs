@@ -12,10 +12,6 @@ namespace M220NLessons
      */
     class Theater
     {
-        public ObjectId Id { get; set; }
-        public int TheaterId { get; set; }
-        public LocationType Location { get; set; }
-
         public Theater() { }
 
         public Theater(int theaterId, string street, string city, string state, string zip)
@@ -24,11 +20,14 @@ namespace M220NLessons
             this.Location = new LocationType(street, city, state, zip);
         }
 
+        public ObjectId Id { get; set; }
+
+        public int TheaterId { get; set; }
+
+        public LocationType Location { get; set; }
+
         public class LocationType
         {
-            public AddressType Address { get; set; }
-            public GeoLoc Geo { get; set; }
-
             public LocationType(string street, string city, string state, string zip)
             {
                 this.Address = new LocationType.AddressType()
@@ -40,17 +39,25 @@ namespace M220NLessons
                 };
             }
 
+            public AddressType Address { get; set; }
+
+            public GeoLoc Geo { get; set; }
+
             public class AddressType
             {
                 public string Street1 { get; set; }
+
                 public string City { get; set; }
+
                 public string State { get; set; }
+
                 public string Zipcode { get; set; }
             }
 
             public class GeoLoc
             {
                 public string Type { get; set; }
+
                 public double[] Coordinates { get; set; }
             }
         }

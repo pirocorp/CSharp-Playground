@@ -38,7 +38,7 @@ namespace M220NLessons
         [Test]
         public async Task DeleteOneTheaterAsync()
         {
-            var allTheatersCount = _theatersCollection.CountDocuments(
+            var allTheatersCount = await _theatersCollection.CountDocumentsAsync(
                 Builders<Theater>.Filter.Empty);
 
             /*
@@ -70,8 +70,8 @@ namespace M220NLessons
             Assert.AreEqual(1, result.DeletedCount);
 
             Assert.AreEqual(allTheatersCount - 1,
-                _theatersCollection
-                .CountDocuments(Builders<Theater>.Filter.Empty));
+                await _theatersCollection
+                    .CountDocumentsAsync(Builders<Theater>.Filter.Empty));
 
             /* We can also delete a single document with FindOneAndDelete, which
              * does the same thing as above, but the driver returns the deleted
@@ -90,9 +90,8 @@ namespace M220NLessons
 
             // We now expect the total count to be 2 less than when we started:
             Assert.AreEqual(allTheatersCount - 2,
-                _theatersCollection
-                .CountDocuments(Builders<Theater>.Filter.Empty));
-
+                await _theatersCollection
+                    .CountDocumentsAsync(Builders<Theater>.Filter.Empty));
         }
 
         [Test]

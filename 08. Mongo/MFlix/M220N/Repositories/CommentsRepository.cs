@@ -47,9 +47,7 @@ namespace M220N.Repositories
                     MovieId = movieId
                 };
 
-                // Ticket: Add a new Comment
-                // Implement InsertOneAsync() to insert a
-                // new comment into the comments collection.
+                await _commentsCollection.InsertOneAsync(newComment, cancellationToken: cancellationToken);
 
                 return await _moviesRepository.GetMovieAsync(movieId.ToString(), cancellationToken);
             }
@@ -83,7 +81,28 @@ namespace M220N.Repositories
             // // new UpdateOptions { ... } ,
             // // cancellationToken);
 
-            return null;
+            var filter = Builders<Comment>.Filter.And(
+                Builders<Comment>.Filter.Eq(f => f.Id, commentId),
+                Builders<Comment>.Filter.Eq(f => f.MovieId, movieId),
+                Builders<Comment>.Filter.Eq(f => f.Email, user.Email));
+
+            var commentEntity = await (await _commentsCollection
+                .FindAsync(filter, cancellationToken: cancellationToken))
+                .SingleOrDefaultAsync(cancellationToken);
+
+            var update = Builders<Comment>.Update
+                .Set(c => c.Text, comment);
+
+            var updateOptions = new UpdateOptions
+            {
+                IsUpsert = false
+            };
+
+            return await _commentsCollection.UpdateOneAsync(
+                filter,
+                update,
+                updateOptions,
+                cancellationToken);
         }
 
         /// <summary>
@@ -97,14 +116,9 @@ namespace M220N.Repositories
         public async Task<Movie> DeleteCommentAsync(ObjectId movieId, ObjectId commentId,
             User user, CancellationToken cancellationToken = default)
         {
-            // Ticket: Delete a Comment
-            // Implement DeleteOne() to delete an
-            // existing comment. Remember that only the original
-            // comment owner can delete the comment!
-            _commentsCollection.DeleteOne(
-                Builders<Comment>.Filter.Where(
-                    c => c.MovieId == movieId
-                         && c.Id == commentId));
+            await _commentsCollection.DeleteOneAsync(
+                Builders<Comment>.Filter.Where(c => c.MovieId == movieId && c.Id == commentId && c.Email == user.Email), 
+                    cancellationToken);
 
             return await _moviesRepository.GetMovieAsync(movieId.ToString(), cancellationToken);
         }

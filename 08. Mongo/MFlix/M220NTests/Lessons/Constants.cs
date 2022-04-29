@@ -16,7 +16,6 @@ namespace M220NLessons
                 .Build();
 
             return configuration.GetValue<string>("MongoUri");
-
         }
     }
 }

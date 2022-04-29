@@ -9,6 +9,9 @@ using NUnit.Framework;
 
 namespace M220NLessons
 {
+    using System.Collections.Immutable;
+    using System.Linq;
+
     /// <summary>
     /// This Test Class shows the code used in the Aggregation lesson.
     ///
@@ -46,7 +49,7 @@ namespace M220NLessons
          */
 
         [Test]
-        public void CountMovies()
+        public async Task CountMovies()
         {
             // This stage finds all movies that have a specific director
             var matchStage = new BsonDocument("$match",
@@ -85,12 +88,14 @@ namespace M220NLessons
                 });
 
             
-            var result = _moviesCollection.Aggregate(pipeline).ToList();
+            var cursor = await _moviesCollection.AggregateAsync(pipeline);
             /* Note: we're making a synchronous Aggregate() call.
              * If you want a challenge, change the line above to make an
              * asynchronous call (hint: you'll need to make 2 changes),
              * and then confirm the unit test still passes.
              */
+
+            var result = await cursor.ToListAsync();
 
             Assert.AreEqual(14, result.Count);
             var firstMovie = result[0];

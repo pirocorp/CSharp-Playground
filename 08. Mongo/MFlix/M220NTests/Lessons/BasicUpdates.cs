@@ -72,7 +72,7 @@ namespace M220NLessons
              * change just the "location.address.street1" field in the document. 
              */
 
-            var updateResult = _theatersCollection.UpdateOne(filter,
+            var updateResult = await _theatersCollection.UpdateOneAsync(filter,
               new BsonDocument("$set",
                     new BsonDocument("location.address.street1", "123 Main St."))
               );
@@ -84,12 +84,11 @@ namespace M220NLessons
             * helps ensure we are using the correct the field name:
             */
 
-            _theatersCollection.UpdateOne(filter,
-             Builders<Theater>.Update.Set(t => t.Location.Address.Street1,
-                 "123 Main St.")
-             );
-
-
+            await _theatersCollection.UpdateOneAsync(filter,
+             Builders<Theater>.Update.Set(
+                 t => t.Location.Address.Street1,
+                 "123 Main St."));
+            
             /* Finally, if you want to do something with the updated document, you
              * can use the FindOneAndUpdate method:
              */
@@ -98,8 +97,7 @@ namespace M220NLessons
                 filter,
                 Builders<Theater>.Update.Set(
                     t => t.Location.Address.Street1,
-                    "123 Main St.")
-                );
+                    "123 Main St."));
 
             Assert.AreEqual("123 Main St.", updatedDoc.Location.Address.Street1);
         }
@@ -132,9 +130,6 @@ namespace M220NLessons
             Assert.IsTrue(result.IsAcknowledged);
             Assert.AreEqual(6, result.ModifiedCount);
         }
-
-
-
 
         /* This TearDown method just resets the data to its original state so
          * future tests don't fail.

@@ -52,7 +52,8 @@ namespace M220NLessons
              *
              */
 
-            var newTheater = new Theater(27777,
+            var newTheater = new Theater(
+                27777,
                 "4 Privet Drive",
                 "Little Whinging",
                 "LA",

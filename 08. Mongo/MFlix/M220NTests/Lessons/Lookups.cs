@@ -116,10 +116,9 @@ namespace M220NLessons
                 .Match(m => (int)m.Year < 1990 && (int)m.Year >= 1980)
                 .Lookup(
                     _commentsCollection,
-                    m => m.Id,
-                    c => c.MovieId,
-                    (Movie m)=>m.Comments
-                    )
+                    m => m.Id, // Primary key
+                    c => c.MovieId, // Foreign key
+                    (Movie m)=>m.Comments) // Projection to Comments property
                 .ToList();
 
             var firstMovie = movies.First();
