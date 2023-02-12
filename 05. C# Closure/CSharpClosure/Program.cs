@@ -13,10 +13,11 @@
         public static void Main()
         {
             var i = ClosureExamples.Incrementator();
+            int x;
 
-            while (i() < 5)
+            while ((x = i()) < 5)
             {
-                Console.WriteLine("Hi");
+                Console.WriteLine($"Hi {x}");
             }
         }
     }
